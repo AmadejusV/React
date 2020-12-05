@@ -1,12 +1,23 @@
-import React,{useState, useEffect} from "react";
+import React,{useState} from "react";
 import {Form, Button} from 'react-bootstrap';
 import InfoForma from "../infoForma/InfoForma";
 import "./domenoForm.scss";
+
+
+let savedDomains = localStorage.getItem('savedDomainsArray')
+     ? JSON.parse(localStorage.getItem('savedDomainsArray'))
+     : [];
+  
+     localStorage.setItem('savedDomainsArray', JSON.stringify(savedDomains));
+     const data = JSON.parse(localStorage.getItem('savedDomainsArray'));
+
 
 function DomenoForm() {
 
     const [domainName, setDomainName] = useState("");
     const [domainObject, setDomainObject] = useState(null);
+
+    
 
     const getDomainRequest = async (e) =>{
         
@@ -19,7 +30,7 @@ function DomenoForm() {
         // const responseJson = await response.json();
         // setDomainObject(responseJson);
 
-        const response = await fetch(url)
+         await fetch(url)
         .then(responseJson => responseJson.json())
         .then(data=>{return setDomainObject(data.domains[0])})
 
@@ -29,23 +40,23 @@ function DomenoForm() {
         console.log(domainObject)
     }
     
-    
+    // localStorage.clear() 
+
     // useEffect(() =>{
     // //     getDomainRequest(domainName);
     // }, []);
 
-    // function getInfo(e){
-    //     console.log(domainObject);
-    //     e.preventDefault();
-    // }
+    
 
-    // useEffect(()=>{
-    //     fetch("https://api.domainsdb.info/v1/domains/search?limit=50&domain="+domainName)
-    //     .then(res=>res.json())
-    //     .then((res)=>{
-    //         setDomainObject(res)
-    //     })
-    // },[domainObject])
+    console.log(data+" cia yra savedDomains array pries istumiant nauja object")
+    console.log(data[4])
+
+    function saveDomainHandler(event){
+        event.preventDefault();
+        savedDomains.push(domainObject);
+        localStorage.setItem("savedDomainsArray", JSON.stringify(savedDomains));
+    }
+    
     
     function domainInputHandler(event){
         const ivestasDomain = event.target.value;
@@ -63,6 +74,9 @@ function DomenoForm() {
                 <Button onClick={getDomainRequest} className="violet" type="submit">
                     Ieškoti
                 </Button>
+                <Button onClick={saveDomainHandler} className="violet" type="submit">
+                    Išsaugoti
+                </Button>
             </Form>
             
             <ul>
@@ -73,7 +87,7 @@ function DomenoForm() {
 }
 
 export default DomenoForm;
-
+export {data};
 
 
 
